@@ -1,6 +1,9 @@
 library(tidyverse)
+remotes::install_version('Matrix', version = '1.6.4') #Required for installing Seurat
 install.packages("Seurat")
 library(SeuratObject)
+library(dplyr)
+library(patchwork)
 
 #Read in UMI count date
 UMIcounts <- read_delim('GSE181919_UMI_counts.txt') #Didn't work, too large I think. 
@@ -12,4 +15,4 @@ UMI.t <- as.tibble(UMI_counts) #Tidy data
 
 #Create Seurat object
 ?Seurat
-SeuratObject::
+Sobject <- CreateSeuratObject(counts = UMI_counts, project = "Bish", min.features = 200, min.cells = 3)
