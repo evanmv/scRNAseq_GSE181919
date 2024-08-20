@@ -1,6 +1,6 @@
 library(tidyverse)
 install.packages("Seurat")
-library(Seurat)
+library(SeuratObject)
 
 #Read in UMI count date
 UMIcounts <- read_delim('GSE181919_UMI_counts.txt') #Didn't work, too large I think. 
@@ -11,3 +11,5 @@ rownames(UMI_counts) <- UMI_counts$V1 #Set gene names from column V1 as row name
 UMI.t <- as.tibble(UMI_counts) #Tidy data
 
 #Create Seurat object
+?Seurat
+SeuratObject::
