@@ -4,6 +4,7 @@ install.packages("Seurat")
 library(SeuratObject)
 library(dplyr)
 library(patchwork)
+library(Matrix)
 
 #Read in UMI count date
 UMIcounts <- read_delim('GSE181919_UMI_counts.txt') #Didn't work, too large I think. 
@@ -11,8 +12,18 @@ UMI_counts <- data.table::fread('GSE181919_UMI_counts.txt')
 
 head(UMI_counts[, 1:10])
 rownames(UMI_counts) <- UMI_counts$V1 #Set gene names from column V1 as row names
-UMI.t <- as.tibble(UMI_counts) #Tidy data
 
+#Convert data.frame to matrix
+UMI.m <- as.matrix(UMI_counts)
+rownames(UMI.m) <- UMI_counts$V1 #Assign gene names as row names
+UMI.m <- UMI.m[, colnames(UMI.m) != "V1"] #Remove row names as sep column
+head(UMI.m[, 1:10])
+rownames(UMI.m)
+colnames(UMI.m)
+#Remember to free unused memory
 #Create Seurat object
 ?Seurat
-Sobject <- CreateSeuratObject(counts = UMI_counts, project = "Bish", min.features = 200, min.cells = 3)
+Sobject <- CreateSeuratObject(counts = UMI.m, project = "Bish", min.features = 200, min.cells = 3)
+
+dim(UMI.m)
+dimnames(UMI.m)
