@@ -50,3 +50,41 @@ Sobject <- subset(Sobject, subset = nFeature_RNA > 200 & nFeature_RNA < 8000 & p
 
 Sobject <- NormalizeData(Sobject, normalization.method = "LogNormalize", scale.factor = 10000)
 
+#ID variable features
+
+Sobject <- FindVariableFeatures(Sobject, selection.method = "vst")
+
+top10 <- head(VariableFeatures(Sobject), 10)
+
+vfPlot1 <- VariableFeaturePlot(Sobject)
+vfPLot2 <- LabelPoints(plot = vfPlot1, points = top10, repel = TRUE)
+vfPlot1 + vfPLot2
+
+#Scaling
+
+all.genes <- rownames(Sobject)
+Sobject <- ScaleData(Sobject, features = all.genes)
+
+#PCA
+
+Sobject <- RunPCA(Sobject, features = VariableFeatures(object = Sobject))
+VizDimLoadings(Sobject, dims = 1:2, reduction = "pca") #1D plots with gene names
+DimPlot(Sobject, reduction = "pca") + NoLegend() #2D plot
+DimHeatmap(Sobject, dims = 1:15, cells = 500, balanced = TRUE) #15 dimensions, heat maps
+ElbowPlot(Sobject, ndims = 50) #50 dimensions, dips around PC25?
+
+#Clustering (25 dimensions)
+
+Sobject <- FindNeighbors(Sobject, dims = 1:25)
+Sobject <- FindClusters(Sobject, resolution = 0.5)
+head(Idents(Sobject), 10)
+
+#UMAP 
+
+Sobject <- RunUMAP(Sobject, dims = 1:25)
+DimPlot(Sobject, reduction = "umap")
+saveRDS(Sobject, file = "/fp/homes01/u01/ec-evanmv/scRNAseq_GSE181919/Sobject.Rds")
+
+#Id Cluster Biomarkers
+
+Sobject.markers <- FindAllMarkers(Sobject, only.pos = TRUE)
