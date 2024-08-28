@@ -88,3 +88,19 @@ saveRDS(Sobject, file = "/fp/homes01/u01/ec-evanmv/scRNAseq_GSE181919/Sobject.Rd
 #Id Cluster Biomarkers
 
 Sobject.markers <- FindAllMarkers(Sobject, only.pos = TRUE)
+saveRDS(Sobject.markers, file = "../scRNAseq_GSE181919/Sobject.markers.Rds")
+
+FeaturePlot(Sobject, features = c("DCN", "COL1A2", "C1S", "COL6A2", "C1R"))
+
+Sobject.markers %>% 
+  group_by(cluster) %>%
+  dplyr::filter(avg_log2FC > 1) %>%
+  slice_head(n = 10) %>% 
+  ungroup() -> top10
+
+ClusterHeatMap <- DoHeatmap(subset(Sobject, downsample = 100) , features = top10$gene) + NoLegend()
+
+dev.off()
+
+write_csv(Sobject.markers, "markers.csv")
+write_csv(top10, "top10Markers.csv")
