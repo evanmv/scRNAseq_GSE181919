@@ -76,7 +76,7 @@ ElbowPlot(Sobject, ndims = 50) #50 dimensions, dips around PC25?
 #Clustering (25 dimensions)
 
 Sobject <- FindNeighbors(Sobject, dims = 1:25)
-Sobject <- FindClusters(Sobject, resolution = 0.5)
+Sobject <- FindClusters(Sobject, resolution = 0.1)
 head(Idents(Sobject), 10)
 
 #UMAP 
